@@ -86,6 +86,10 @@ def to_task_dask(expr):
         # Ensure output type matches input type
         return (args, dsk) if typ is list else ((typ, args), dsk)
 
+    if hasattr(expr, '__dask_unpack__'):
+        args, dsk = to_task_dask(expr.__dask_unpack__())
+        return ((expr.__dask_pack__, args), dsk)
+
     if typ is dict:
         args, dsk = to_task_dask([[k, v] for k, v in expr.items()])
         return (dict, args), dsk

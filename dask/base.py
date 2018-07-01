@@ -268,6 +268,8 @@ def unpack_collections(*args, **kwargs):
             elif typ is dict:
                 tsk = (dict, [[_unpack(k), _unpack(v)]
                               for k, v in expr.items()])
+            elif hasattr(expr, '__dask_unpack__'):
+                tsk = (expr.__dask_pack__, _unpack(expr.__dask_unpack__()))
             else:
                 return expr
 
